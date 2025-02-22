@@ -3,7 +3,11 @@ package com.app.canteenpro.services.userapi;
 import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
 import com.app.canteenpro.common.LoginResponse;
+import com.app.canteenpro.database.models.Address;
+import com.app.canteenpro.database.models.Canteen;
 import com.app.canteenpro.database.models.User;
+import com.app.canteenpro.database.repositories.AddressRepo;
+import com.app.canteenpro.database.repositories.CanteenRepo;
 import com.app.canteenpro.database.repositories.RolesRepo;
 import com.app.canteenpro.database.repositories.UserRepo;
 import lombok.AllArgsConstructor;
@@ -20,12 +24,35 @@ import java.util.UUID;
 public class AuthService {
     private final UserRepo userRepo;
     private final RolesRepo rolesRepo;
+    private final AddressRepo addressRepo;
+    private final CanteenRepo canteenRepo;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
 
     public LoginResponse signup(UserRegistrationDto registrationData) {
+        // Set address details object
+        Address address = new Address();
+        address.setGuid(UUID.randomUUID().toString());
+        address.setShop_no(registrationData.getShop());
+        address.setApartment(registrationData.getApartment());
+        address.setArea(registrationData.getArea());
+        address.setLandmark(registrationData.getLandmark());
+        address.setCity(registrationData.getCity());
+        address.setState(registrationData.getState());
+        address.setCountry(registrationData.getCountry());
+        address.setZipcode(registrationData.getZipcode());
+        addressRepo.save(address);
+
+        // Set Canteen details
+        Canteen canteen = new Canteen();
+        canteen.setName(registrationData.getCanteenName());
+        canteen.setType(registrationData.getCanteenType());
+        canteen.setGuid(UUID.randomUUID().toString());
+        canteen.setAddress(address);
+        canteenRepo.save(canteen);
+
         User user = new User();
         user.setGuid(UUID.randomUUID().toString());
         user.setFirstname(registrationData.getFirstname());
@@ -33,6 +60,7 @@ public class AuthService {
         user.setEmail(registrationData.getEmail());
         user.setRole(rolesRepo.findByLevel(registrationData.getRoleLevel()));
         user.setPassword(passwordEncoder.encode(registrationData.getPassword()));
+        user.setCanteen(canteen);
         userRepo.save(user);
 
         return this.authenticateUser(registrationData);

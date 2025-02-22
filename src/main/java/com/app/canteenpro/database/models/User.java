@@ -40,6 +40,10 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id")
     private Roles role;
 
+    @ManyToOne
+    @JoinColumn(name = "canteen_id")
+    private Canteen canteen;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getAuthority()));
