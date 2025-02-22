@@ -1,12 +1,13 @@
 package com.app.canteenpro.database.models;
 
+import com.app.canteenpro.database.repositories.RolesRepo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -35,11 +36,13 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private String lastname;
 
-    private int role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Roles role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role.getAuthority()));
     }
 
     @Override
@@ -65,9 +68,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }

@@ -3,9 +3,8 @@ package com.app.canteenpro.DataObjects;
 import lombok.Data;
 
 @Data
-public class UserRegistrationDto {
-    private String email;
-    private String password;
+public class UserRegistrationDto extends  UserLoginDto {
     private String firstname;
     private String lastname;
+    private Integer roleLevel = 1;
 }
