@@ -2,6 +2,7 @@ package com.app.canteenpro.contollers;
 
 import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
+import com.app.canteenpro.common.ApiResponse;
 import com.app.canteenpro.common.LoginResponse;
 import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.services.userapi.AuthService;
@@ -17,18 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/auth")
 @AllArgsConstructor
 public class AuthController {
-    private final JwtService jwtService;
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<LoginResponse> registration(@RequestBody UserRegistrationDto userRegistrationDto) {
+    public ResponseEntity<ApiResponse<LoginResponse>> registration(@RequestBody UserRegistrationDto userRegistrationDto) {
         LoginResponse loginResponse = authService.signup(userRegistrationDto);
-        return ResponseEntity.ok(loginResponse);
+        ApiResponse<LoginResponse> apiResponse = new ApiResponse<LoginResponse>(loginResponse, true, "","");
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticateuser(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<ApiResponse<LoginResponse>> authenticateuser(@RequestBody UserLoginDto userLoginDto) {
         LoginResponse loginResponse =  authService.authenticateUser(userLoginDto);
-        return ResponseEntity.ok(loginResponse);
+        ApiResponse<LoginResponse> apiResponse = new ApiResponse<LoginResponse>(loginResponse, true, "","");
+        return ResponseEntity.ok(apiResponse);
     }
 }
