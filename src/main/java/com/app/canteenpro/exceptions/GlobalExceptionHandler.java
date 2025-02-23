@@ -1,6 +1,7 @@
 package com.app.canteenpro.exceptions;
 
 import com.app.canteenpro.common.ApiResponse;
+import jakarta.mail.MessagingException;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +24,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<?>> handleBadCredentialsException(BadCredentialsException ex) {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Invalid username/email or password!", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ApiResponse<?>> handleEmailTransmissionFailedException(MessagingException ex) {
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Error occurred while sending the email!", ex.toString());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+    }
+
+    @ExceptionHandler(EmailTransmissionFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleEmailTransmissionFailedException(EmailTransmissionFailedException ex) {
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Error occurred while sending the email!", ex.toString());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
     }
 
