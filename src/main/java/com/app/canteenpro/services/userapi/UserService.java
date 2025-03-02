@@ -47,16 +47,6 @@ public class UserService {
         return new User();
     }
 
-    private String generatePassword(Integer passwordLength) {
-        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
-        Random random = new SecureRandom();
-        StringBuilder password = new StringBuilder(passwordLength);
-        for (int i = 0; i < passwordLength; i++) {
-            password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
-        }
-        return password.toString();
-    }
-
     public User createManager(CreateUserDto createUserDto) throws IOException {
         // Check whether user with given email/username already exists
         Optional<User> existingUser = userRepo.findByEmail(createUserDto.getEmail());
@@ -100,6 +90,15 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Signed in user not found! Try to Re-login and try again!");
         }
+    }
 
+    private String generatePassword(Integer passwordLength) {
+        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
+        Random random = new SecureRandom();
+        StringBuilder password = new StringBuilder(passwordLength);
+        for (int i = 0; i < passwordLength; i++) {
+            password.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+        return password.toString();
     }
 }
