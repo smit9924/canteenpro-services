@@ -1,10 +1,8 @@
 package com.app.canteenpro.contollers;
 
 import com.app.canteenpro.DataObjects.CreateUserDto;
-import com.app.canteenpro.common.ApiResponse;
-import com.app.canteenpro.database.models.User;
+import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.services.userapi.UserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

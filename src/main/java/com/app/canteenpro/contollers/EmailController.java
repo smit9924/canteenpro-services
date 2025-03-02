@@ -1,11 +1,10 @@
 package com.app.canteenpro.contollers;
 
 import com.app.canteenpro.DataObjects.EmailDto;
-import com.app.canteenpro.common.ApiResponse;
+import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.services.userapi.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

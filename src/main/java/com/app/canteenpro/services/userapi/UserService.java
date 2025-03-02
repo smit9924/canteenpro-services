@@ -2,7 +2,8 @@ package com.app.canteenpro.services.userapi;
 
 import com.app.canteenpro.DataObjects.CreateUserDto;
 import com.app.canteenpro.DataObjects.EmailDto;
-import com.app.canteenpro.common.ApiResponse;
+import com.app.canteenpro.exceptions.UserAlreadyExistsException;
+import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.common.Enums;
 import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.database.repositories.RolesRepo;
@@ -18,16 +19,12 @@ import org.springframework.web.client.RestTemplate;
 import com.app.canteenpro.common.appConstants;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-
-import static com.app.canteenpro.common.appConstants.INTERNAL_API_EMAIL_WITH_MIME;
 
 @Service
 @AllArgsConstructor
@@ -61,6 +58,12 @@ public class UserService {
     }
 
     public User createManager(CreateUserDto createUserDto) throws IOException {
+        // Check whether user with given email/username already exists
+        Optional<User> existingUser = userRepo.findByEmail(createUserDto.getEmail());
+        if(existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("User with given email is already exists");
+        }
+
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             final String loggedInUserEmail = authentication.getName();

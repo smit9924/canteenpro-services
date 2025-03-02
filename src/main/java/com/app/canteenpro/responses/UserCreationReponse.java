@@ -1,4 +1,4 @@
-package com.app.canteenpro.common;
+package com.app.canteenpro.responses;
 
 public class UserCreationReponse {
 }

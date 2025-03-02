@@ -1,10 +1,7 @@
 package com.app.canteenpro.exceptions;
 
-import com.app.canteenpro.common.ApiResponse;
+import com.app.canteenpro.responses.ApiResponse;
 import jakarta.mail.MessagingException;
-import jakarta.validation.constraints.Null;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,19 +15,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleUserNotFoundException(UserNotFoundException ex) {
         System.out.println(ex.getMessage());
         ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "User not found!", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<?>> handleBadCredentialsException(BadCredentialsException ex) {
-        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Invalid username/email or password!", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, ex.getMessage(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
     }
 
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<ApiResponse<?>> handleEmailTransmissionFailedException(MessagingException ex) {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Error occurred while sending the email!", ex.toString());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
 
     @ExceptionHandler(EmailTransmissionFailedException.class)
@@ -39,9 +36,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<?>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, ex.getMessage(), ex.toString());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Unexpected error occured!", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
 }

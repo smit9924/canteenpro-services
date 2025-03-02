@@ -2,12 +2,10 @@ package com.app.canteenpro.contollers;
 
 import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
-import com.app.canteenpro.common.ApiResponse;
-import com.app.canteenpro.common.LoginResponse;
+import com.app.canteenpro.responses.ApiResponse;
+import com.app.canteenpro.responses.LoginResponse;
 import com.app.canteenpro.database.models.Roles;
-import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.services.userapi.AuthService;
-import com.app.canteenpro.services.userapi.JwtService;
 import com.app.canteenpro.services.userapi.RolesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

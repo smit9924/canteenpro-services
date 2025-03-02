@@ -2,7 +2,8 @@ package com.app.canteenpro.services.userapi;
 
 import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
-import com.app.canteenpro.common.LoginResponse;
+import com.app.canteenpro.exceptions.UserAlreadyExistsException;
+import com.app.canteenpro.responses.LoginResponse;
 import com.app.canteenpro.database.models.Address;
 import com.app.canteenpro.database.models.Canteen;
 import com.app.canteenpro.database.models.User;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,6 +34,12 @@ public class AuthService {
 
 
     public LoginResponse signup(UserRegistrationDto registrationData) {
+        // Check whether user with given email/username already exists
+        Optional<User> existingUser = userRepo.findByEmail(registrationData.getEmail());
+        if(existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("User with given email is already exists");
+        }
+
         // Set address details object
         Address address = new Address();
         address.setGuid(UUID.randomUUID().toString());
