@@ -60,6 +60,7 @@ public class AuthService {
         user.setEmail(registrationData.getEmail());
         user.setRole(rolesRepo.findByLevel(registrationData.getRoleLevel()));
         user.setPassword(passwordEncoder.encode(registrationData.getPassword()));
+        user.setDefaultPasswordUpdated(true);
         user.setCanteen(canteen);
         userRepo.save(user);
 

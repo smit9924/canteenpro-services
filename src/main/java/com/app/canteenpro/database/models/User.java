@@ -1,11 +1,8 @@
 package com.app.canteenpro.database.models;
 
-import com.app.canteenpro.database.repositories.RolesRepo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +32,9 @@ public class User implements UserDetails {
 
     @Column(nullable = true)
     private String lastname;
+
+    @Column(nullable = false)
+    private boolean defaultPasswordUpdated = false;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

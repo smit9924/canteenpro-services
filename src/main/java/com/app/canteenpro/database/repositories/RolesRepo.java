@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RolesRepo extends JpaRepository<Roles, Integer> {
     Roles findByLevel(Integer level);
+    Roles findByRole(String name);
 }

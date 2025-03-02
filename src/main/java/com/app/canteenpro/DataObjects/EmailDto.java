@@ -1,13 +1,11 @@
 package com.app.canteenpro.DataObjects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-@AllArgsConstructor
+@Getter
+@Builder
 @Data
 public class EmailDto {
     private String recipient;
