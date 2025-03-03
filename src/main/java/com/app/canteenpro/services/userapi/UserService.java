@@ -2,6 +2,8 @@ package com.app.canteenpro.services.userapi;
 
 import com.app.canteenpro.DataObjects.CreateUserDto;
 import com.app.canteenpro.DataObjects.EmailDto;
+import com.app.canteenpro.DataObjects.UserListingDto;
+import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.exceptions.UserAlreadyExistsException;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.common.Enums;
@@ -22,9 +24,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -90,6 +94,20 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Signed in user not found! Try to Re-login and try again!");
         }
+    }
+
+    public List<UserListingDto> getUserList(String userRole) {
+        List<UserListingDto> userList = userRepo.findAllByRole(rolesRepo.findByRole(userRole)).stream().map((user) -> {
+            return new UserListingDto(
+                    user.getGuid(),
+                    user.getEmail(),
+                    user.getFirstname(),
+                    user.getLastname(),
+                    user.getCreatedOn(),
+                    user.getEditedOn());
+            })
+            .toList();
+        return userList;
     }
 
     private String generatePassword(Integer passwordLength) {

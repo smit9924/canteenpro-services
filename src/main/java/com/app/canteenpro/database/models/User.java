@@ -3,10 +3,15 @@ package com.app.canteenpro.database.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,6 +48,23 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "canteen_id")
     private Canteen canteen;
+
+    private LocalDateTime createdOn;
+    private LocalDateTime editedOn;
+
+    // Auto set time stamp on creation
+    @PrePersist
+    protected void onCreate() {
+        final LocalDateTime timestamp = LocalDateTime.now();
+        createdOn = timestamp;
+        editedOn = timestamp;
+    }
+
+    // Audio set timestamp on edit
+    @PreUpdate
+    protected void onUpdate() {
+        editedOn = LocalDateTime.now();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
