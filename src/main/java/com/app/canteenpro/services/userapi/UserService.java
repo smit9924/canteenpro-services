@@ -1,9 +1,9 @@
 package com.app.canteenpro.services.userapi;
 
-import com.app.canteenpro.DataObjects.CreateUserDto;
+import com.app.canteenpro.DataObjects.UpsertUserDto;
 import com.app.canteenpro.DataObjects.EmailDto;
 import com.app.canteenpro.DataObjects.UserListingDto;
-import com.app.canteenpro.DataObjects.UserLoginDto;
+import com.app.canteenpro.exceptions.InSufficientParameterDataException;
 import com.app.canteenpro.exceptions.UserAlreadyExistsException;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.common.Enums;
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,9 +50,9 @@ public class UserService {
         return new User();
     }
 
-    public User createManager(CreateUserDto createUserDto) throws IOException {
+    public User createManager(UpsertUserDto upsertUserDto) throws IOException {
         // Check whether user with given email/username already exists
-        Optional<User> existingUser = userRepo.findByEmail(createUserDto.getEmail());
+        Optional<User> existingUser = userRepo.findByEmail(upsertUserDto.getEmail());
         if(existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User with given email is already exists");
         }
@@ -66,9 +65,9 @@ public class UserService {
 
             User manager = new User();
             manager.setGuid(UUID.randomUUID().toString());
-            manager.setFirstname(createUserDto.getFirstname());
-            manager.setLastname(createUserDto.getLastname());
-            manager.setEmail(createUserDto.getEmail());
+            manager.setFirstname(upsertUserDto.getFirstname());
+            manager.setLastname(upsertUserDto.getLastname());
+            manager.setEmail(upsertUserDto.getEmail());
             manager.setRole(rolesRepo.findByLevel(Enums.USER_ROLES.MANAGER.getValue()));
             manager.setCanteen(loggedInUser.getCanteen());
             manager.setPassword(passwordEncoder.encode(generatedPassword));
@@ -84,7 +83,7 @@ public class UserService {
 
             // Send credentials to user via email
             EmailDto emailDto = EmailDto.builder()
-                            .recipient(createUserDto.getEmail())
+                            .recipient(upsertUserDto.getEmail())
                             .subject(appConstants.INITIAL_LOGIN_CREDENTIALS_EMAIL_SUBJECT)
                             .msgBody(emailTemplate)
                             .build();
@@ -108,6 +107,60 @@ public class UserService {
             })
             .toList();
         return userList;
+    }
+
+    public UpsertUserDto getUserData(String guid) {
+        User user = userRepo.findByGuid(guid);
+        if(user == null) {
+            throw new UserNotFoundException(appConstants.USER_HAVING_GUID_NOT_FOUND);
+        }
+
+        UpsertUserDto upsertUserDto = UpsertUserDto.builder()
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .email(user.getEmail())
+                .build();
+        return upsertUserDto;
+    }
+
+    public List<UserListingDto> deleteUser(String guid) {
+        User userToBeDeleted = userRepo.findByGuid(guid);
+        if(userToBeDeleted == null) {
+            throw new UserNotFoundException(appConstants.USER_HAVING_GUID_NOT_FOUND);
+        }
+        final String userRole = userToBeDeleted.getRole().getRole();
+        userRepo.delete(userToBeDeleted);
+
+        // Fetching updated user list
+        List<UserListingDto> userList = userRepo.findAllByRole(rolesRepo.findByRole(userRole)).stream().map((user) -> {
+                    return new UserListingDto(
+                            user.getGuid(),
+                            user.getEmail(),
+                            user.getFirstname(),
+                            user.getLastname(),
+                            user.getCreatedOn(),
+                            user.getEditedOn());
+                })
+                .toList();
+        return userList;
+    }
+
+    public User updateUser(UpsertUserDto upsertUserDto) {
+        if(upsertUserDto.getGuid().isEmpty()) {
+            throw new InSufficientParameterDataException(appConstants.USER_UPDATE_FAILED_DUE_TO_NULL_GUID);
+        }
+        // Get existing user data
+        User user = userRepo.findByGuid(upsertUserDto.getGuid());
+
+        // Update user data
+        user.setFirstname(upsertUserDto.getFirstname());
+        user.setLastname(upsertUserDto.getLastname());
+        user.setEmail(upsertUserDto.getEmail());
+
+        // Saving updated user data
+        userRepo.save(user);
+
+        return user;
     }
 
     private String generatePassword(Integer passwordLength) {

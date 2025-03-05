@@ -1,15 +1,15 @@
 package com.app.canteenpro.contollers;
 
-import com.app.canteenpro.DataObjects.CreateUserDto;
+import com.app.canteenpro.DataObjects.UpsertUserDto;
 import com.app.canteenpro.DataObjects.UserListingDto;
-import com.app.canteenpro.common.Enums;
-import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.services.userapi.UserService;
+import com.app.canteenpro.exceptions.InSufficientParameterDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.InsufficientResourcesException;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,15 +21,39 @@ public class userController {
 
     // Create user: Manager
     @PostMapping("/create/manager")
-    public ResponseEntity<ApiResponse<?>> createManager(@RequestBody CreateUserDto createUserDto) throws IOException {
+    public ResponseEntity<ApiResponse<?>> createManager(@RequestBody UpsertUserDto upsertUserDto) throws IOException {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "New manager created successfully!" ,"");
-        userService.createManager(createUserDto);
+        userService.createManager(upsertUserDto);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // get user data
+    @GetMapping("")
+    public ResponseEntity<ApiResponse<UpsertUserDto>> getUserData(@RequestParam String guid) {
+        UpsertUserDto upsertUserDto = userService.getUserData(guid);
+        ApiResponse<UpsertUserDto> apiResponse = new ApiResponse<UpsertUserDto>(upsertUserDto, true, "New manager created successfully!" ,"");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // delete user
+    @DeleteMapping("")
+    public ResponseEntity<ApiResponse<List<UserListingDto>>> deleteUser(@RequestParam String guid) {
+        List<UserListingDto> userListing = userService.deleteUser(guid);
+        ApiResponse<List<UserListingDto>> apiResponse = new ApiResponse<List<UserListingDto>>(userListing, true, "New manager created successfully!" ,"");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // update user
+    @PutMapping("")
+    public ResponseEntity<ApiResponse<?>> updateUser(@RequestBody UpsertUserDto upsertUserDto) {
+        userService.updateUser(upsertUserDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "User updated successfully!" ,"");
         return ResponseEntity.ok(apiResponse);
     }
 
     // Get user listing
-    @GetMapping("/{userType}")
-    public ResponseEntity<ApiResponse<List<UserListingDto>>> getUsers(@PathVariable String userType) {
+    @GetMapping("/list/{userType}")
+    public ResponseEntity<ApiResponse<List<UserListingDto>>> getUserList(@PathVariable String userType) {
         List<UserListingDto> usersList = userService.getUserList(userType);
         ApiResponse<List<UserListingDto>> apiResponse = new ApiResponse<List<UserListingDto>>(usersList, true, "", "");
         return ResponseEntity.ok(apiResponse);

@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Bean;
 public class appConstants {
     // Exception handling messages
     public static String USER_HAVING_ID_NOT_FOUND = "User with given id is not found.";
+    public static String USER_HAVING_GUID_NOT_FOUND = "User with given GUID is not found.";
     public static String USER_HAVING_CREDENTIALS_NOT_FOUND = "User having given credentials not found";
     public static String INVALID_CREDENTIALS = "Invalid email or password.";
+    public static String USER_UPDATE_FAILED_DUE_TO_NULL_GUID = "User update failed. No user found with the provided GUID";
 
     // API urls
     public static String INTERNAL_API_BASE_URL = "http://localhost:8080/";
