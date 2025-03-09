@@ -11,6 +11,7 @@ import java.util.Optional;
 @Builder
 public class UpsertUserDto {
     private String guid = null;
+    private Integer userType = null;
     private String firstname;
     private String lastname;
     private String email;

@@ -40,17 +40,9 @@ public class UserService {
 
     @Autowired
     private RestTemplate restTemplate;
-
     private final PasswordEncoder passwordEncoder;
 
-    public User getUser(int id) {
-        if(userRepo.findById(id).isPresent()) {
-            return userRepo.findById(id).get();
-        }
-        return new User();
-    }
-
-    public User createManager(UpsertUserDto upsertUserDto) throws IOException {
+    public User createUser(UpsertUserDto upsertUserDto) throws IOException {
         // Check whether user with given email/username already exists
         Optional<User> existingUser = userRepo.findByEmail(upsertUserDto.getEmail());
         if(existingUser.isPresent()) {
@@ -63,21 +55,21 @@ public class UserService {
             User loggedInUser = userRepo.findByEmail(loggedInUserEmail).orElseThrow();
             String generatedPassword = this.generatePassword(8);
 
-            User manager = new User();
-            manager.setGuid(UUID.randomUUID().toString());
-            manager.setFirstname(upsertUserDto.getFirstname());
-            manager.setLastname(upsertUserDto.getLastname());
-            manager.setEmail(upsertUserDto.getEmail());
-            manager.setRole(rolesRepo.findByLevel(Enums.USER_ROLES.MANAGER.getValue()));
-            manager.setCanteen(loggedInUser.getCanteen());
-            manager.setPassword(passwordEncoder.encode(generatedPassword));
-            userRepo.save(manager);
+            User newUser = new User();
+            newUser.setGuid(UUID.randomUUID().toString());
+            newUser.setFirstname(upsertUserDto.getFirstname());
+            newUser.setLastname(upsertUserDto.getLastname());
+            newUser.setEmail(upsertUserDto.getEmail());
+            newUser.setRole(rolesRepo.findByLevel(upsertUserDto.getUserType()));
+            newUser.setCanteen(loggedInUser.getCanteen());
+            newUser.setPassword(passwordEncoder.encode(generatedPassword));
+            userRepo.save(newUser);
 
             // Get email template and set data
             String emailTemplate = Files.readString(Paths.get("src/main/resources/templates/initial-login-credential.html"));
-            emailTemplate = emailTemplate.replace("{{firstname}}", manager.getFirstname())
-                    .replace("{{accountType}}", manager.getRole().getRole())
-                    .replace("{{email}}", manager.getEmail())
+            emailTemplate = emailTemplate.replace("{{firstname}}", newUser.getFirstname())
+                    .replace("{{accountType}}", newUser.getRole().getRole())
+                    .replace("{{email}}", newUser.getEmail())
                     .replace("{{password}}", generatedPassword)
                     .replace("{{loginUrl}}", appConstants.ACCOUNT_LOGIN_URL);
 
@@ -89,7 +81,7 @@ public class UserService {
                             .build();
             restTemplate.postForEntity(appConstants.INTERNAL_API_EMAIL_WITH_MIME, emailDto, ApiResponse.class);
 
-            return manager;
+            return newUser;
         } else {
             throw new UserNotFoundException("Signed in user not found! Try to Re-login and try again!");
         }

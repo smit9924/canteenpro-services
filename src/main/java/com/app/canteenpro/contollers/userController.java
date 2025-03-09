@@ -4,12 +4,10 @@ import com.app.canteenpro.DataObjects.UpsertUserDto;
 import com.app.canteenpro.DataObjects.UserListingDto;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.services.userapi.UserService;
-import com.app.canteenpro.exceptions.InSufficientParameterDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.InsufficientResourcesException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,10 +18,10 @@ public class userController {
     public UserService userService;
 
     // Create user: Manager
-    @PostMapping("/create/manager")
+    @PostMapping("")
     public ResponseEntity<ApiResponse<?>> createManager(@RequestBody UpsertUserDto upsertUserDto) throws IOException {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "New manager created successfully!" ,"");
-        userService.createManager(upsertUserDto);
+        userService.createUser(upsertUserDto);
         return ResponseEntity.ok(apiResponse);
     }
 

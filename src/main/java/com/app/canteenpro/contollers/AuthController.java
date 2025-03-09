@@ -1,5 +1,6 @@
 package com.app.canteenpro.contollers;
 
+import com.app.canteenpro.DataObjects.RoleListDto;
 import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
 import com.app.canteenpro.responses.ApiResponse;
@@ -35,8 +36,8 @@ public class AuthController {
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<ApiResponse<List<Roles>>> userRolesList() {
-        ApiResponse<List<Roles>> apiResponse = new ApiResponse<List<Roles>>(rolesService.getUserList(), true, "","");
+    public ResponseEntity<ApiResponse<List<RoleListDto>>> userRolesList() {
+        ApiResponse<List<RoleListDto>> apiResponse = new ApiResponse<List<RoleListDto>>(rolesService.getUserList(), true, "","");
         return ResponseEntity.ok(apiResponse);
     }
 }
