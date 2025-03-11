@@ -3,6 +3,7 @@ package com.app.canteenpro.contollers;
 import com.app.canteenpro.DataObjects.UpsertUserDto;
 import com.app.canteenpro.DataObjects.UserListingDto;
 import com.app.canteenpro.responses.ApiResponse;
+import com.app.canteenpro.responses.UserProfileResponse;
 import com.app.canteenpro.services.userapi.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,15 @@ public class userController {
     public ResponseEntity<ApiResponse<List<UserListingDto>>> getUserList(@PathVariable String userType) {
         List<UserListingDto> usersList = userService.getUserList(userType);
         ApiResponse<List<UserListingDto>> apiResponse = new ApiResponse<List<UserListingDto>>(usersList, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Get user profile data
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfileData() {
+        final UserProfileResponse userProfileData = userService.getUserProfileData();
+        System.out.println(userProfileData);
+        ApiResponse<UserProfileResponse> apiResponse = new ApiResponse<UserProfileResponse>(userProfileData, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 }

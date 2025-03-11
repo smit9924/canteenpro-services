@@ -11,7 +11,9 @@ import com.app.canteenpro.database.repositories.AddressRepo;
 import com.app.canteenpro.database.repositories.CanteenRepo;
 import com.app.canteenpro.database.repositories.RolesRepo;
 import com.app.canteenpro.database.repositories.UserRepo;
+import com.app.canteenpro.responses.UserProfileResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +33,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+
+    @Autowired
+    public UserService userService;
+
+    @Autowired
+    public CommonService commonService;
 
 
     public LoginResponse signup(UserRegistrationDto registrationData) {
@@ -98,5 +106,15 @@ public class AuthService {
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(newRefreshToken);
         return loginResponse;
+    }
+
+    public UserProfileResponse changeDefaultPassword(String newPassword) {
+        final User currentUser = commonService.getLoggedInUser();
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
+        currentUser.setDefaultPasswordUpdated(true);
+        userRepo.save((currentUser));
+
+        final UserProfileResponse userProfileData = userService.getUserProfileData();
+        return  userProfileData;
     }
 }

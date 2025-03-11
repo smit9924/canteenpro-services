@@ -6,11 +6,11 @@ import com.app.canteenpro.DataObjects.UserListingDto;
 import com.app.canteenpro.exceptions.InSufficientParameterDataException;
 import com.app.canteenpro.exceptions.UserAlreadyExistsException;
 import com.app.canteenpro.responses.ApiResponse;
-import com.app.canteenpro.common.Enums;
 import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.database.repositories.RolesRepo;
 import com.app.canteenpro.database.repositories.UserRepo;
 import com.app.canteenpro.exceptions.UserNotFoundException;
+import com.app.canteenpro.responses.UserProfileResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -40,6 +40,10 @@ public class UserService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    public CommonService commonService;
+
     private final PasswordEncoder passwordEncoder;
 
     public User createUser(UpsertUserDto upsertUserDto) throws IOException {
@@ -153,6 +157,21 @@ public class UserService {
         userRepo.save(user);
 
         return user;
+    }
+
+    public UserProfileResponse getUserProfileData() {
+        final User loggedinUserData = commonService.getLoggedInUser();
+
+        UserProfileResponse userProfileData = UserProfileResponse.builder()
+                .firstname(loggedinUserData.getFirstname())
+                .lastname(loggedinUserData.getLastname())
+                .email(loggedinUserData.getEmail())
+                .guid(loggedinUserData.getGuid())
+                .defaultPasswordUpdated(loggedinUserData.isDefaultPasswordUpdated())
+                .roleLevel(loggedinUserData.getRole().getLevel())
+                .build();
+
+        return userProfileData;
     }
 
     private String generatePassword(Integer passwordLength) {

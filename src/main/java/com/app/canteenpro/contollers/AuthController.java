@@ -5,7 +5,7 @@ import com.app.canteenpro.DataObjects.UserLoginDto;
 import com.app.canteenpro.DataObjects.UserRegistrationDto;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.responses.LoginResponse;
-import com.app.canteenpro.database.models.Roles;
+import com.app.canteenpro.responses.UserProfileResponse;
 import com.app.canteenpro.services.userapi.AuthService;
 import com.app.canteenpro.services.userapi.RolesService;
 import lombok.AllArgsConstructor;
@@ -35,9 +35,19 @@ public class AuthController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // update default password
+    // return: user profile data;
+    @PostMapping("/changedefaultpassword")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> changeDefaultPassword(@RequestBody String newPassowrd) {
+        final UserProfileResponse userProfileData = authService.changeDefaultPassword(newPassowrd);
+        ApiResponse<UserProfileResponse> apiResponse = new ApiResponse<UserProfileResponse>(userProfileData, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping("/roles")
     public ResponseEntity<ApiResponse<List<RoleListDto>>> userRolesList() {
         ApiResponse<List<RoleListDto>> apiResponse = new ApiResponse<List<RoleListDto>>(rolesService.getUserList(), true, "","");
         return ResponseEntity.ok(apiResponse);
     }
+
 }
