@@ -24,4 +24,5 @@ public class appConstants {
     public static String INITIAL_LOGIN_CREDENTIALS_EMAIL_SUBJECT = "Welcome to Canteenpro – Your Account is Ready!";
 
     public static String EMPTY_STRING = "";
+    public static String BASE64_VALIDATION_REGEX = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
 }

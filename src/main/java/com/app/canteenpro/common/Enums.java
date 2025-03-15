@@ -18,4 +18,10 @@ public class Enums {
             return this.value;
         }
     }
+
+    public static enum FILE_TYPES {
+        IMAGE,
+        AUDIO,
+        VIDEO
+    }
 }
