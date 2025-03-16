@@ -1,7 +1,6 @@
 package com.app.canteenpro.contollers;
 
-import com.app.canteenpro.DataObjects.CategoryDto;
-import com.app.canteenpro.DataObjects.CategoryListingDto;
+import com.app.canteenpro.DataObjects.*;
 import com.app.canteenpro.responses.ApiResponse;
 import com.app.canteenpro.services.userapi.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,15 @@ public class FoodController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // delete category
+    @DeleteMapping("/category")
+    public ResponseEntity<ApiResponse<List<CategoryListingDto>>> deleteFoodCategory(@RequestParam String guid) {
+        foodService.deleteCategory(guid);
+        List<CategoryListingDto> categories = foodService.getCategoryListing();
+        ApiResponse<List<CategoryListingDto>> apiResponse = new ApiResponse<List<CategoryListingDto>>(categories, true, "Category deleted successfully!" ,"");
+        return ResponseEntity.ok(apiResponse);
+    }
+
     // Get category listing data
     @GetMapping("/category/listing")
     public ResponseEntity<ApiResponse<List<CategoryListingDto>>> getCategoryListingData() {
@@ -49,15 +57,42 @@ public class FoodController {
 
     // Create item
     @PostMapping("/item")
-    public ResponseEntity<ApiResponse<?>> createFoodItem() {
-        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "", "");
+    public ResponseEntity<ApiResponse<?>> createFoodItem(@RequestBody FoodItemDto foodItemDto) {
+        foodService.createFoodItem(foodItemDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 
-    // Get category data
+    // Update food item
+    @PutMapping("/item")
+    public ResponseEntity<ApiResponse<?>> upadteFoodItem(@RequestBody FoodItemDto foodItemDto) {
+        foodService.updateFoodItem(foodItemDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Get food item data
     @GetMapping("/item")
-    public ResponseEntity<ApiResponse<?>> getFoodItemData() {
-        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "", "");
+    public ResponseEntity<ApiResponse<FoodItemDto>> getFoodItemData(@RequestParam String guid) {
+        final FoodItemDto foodItem = foodService.getFoodItem(guid);
+        ApiResponse<FoodItemDto> apiResponse = new ApiResponse<FoodItemDto>(foodItem, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // delete food item
+    @DeleteMapping("/item")
+    public ResponseEntity<ApiResponse<List<FoodItemListingDto>>> deleteFoodItem(@RequestParam String guid) {
+        foodService.deleteFoodItem(guid);
+        List<FoodItemListingDto> foodItemList = foodService.getFoodItemsList();
+        ApiResponse<List<FoodItemListingDto>> apiResponse = new ApiResponse<List<FoodItemListingDto>>(foodItemList, true, "Category deleted successfully!" ,"");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Get category listing data
+    @GetMapping("/item/listing")
+    public ResponseEntity<ApiResponse<List<FoodItemListingDto>>> getFoodItemListingData() {
+        List<FoodItemListingDto> foodItemsList = foodService.getFoodItemsList();
+        ApiResponse<List<FoodItemListingDto>> apiResponse = new ApiResponse<List<FoodItemListingDto>>(foodItemsList, false, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 }

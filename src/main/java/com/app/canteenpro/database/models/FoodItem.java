@@ -1,10 +1,14 @@
 package com.app.canteenpro.database.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+
+@Data
 @Entity
 @Table(name = "item")
-public class Item {
+public class FoodItem {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -14,6 +18,8 @@ public class Item {
 
     @Column(nullable = false)
     private String name;
+
+    private String description;
 
     @Column(nullable = false)
     private Integer type;
@@ -29,6 +35,23 @@ public class Item {
 
     @Column(nullable = false)
     private Integer quantityUnit;
+
+    private LocalDateTime createdOn;
+    private LocalDateTime editedOn;
+
+    // Auto set time stamp on creation
+    @PrePersist
+    protected void onCreate() {
+        final LocalDateTime timestamp = LocalDateTime.now();
+        createdOn = timestamp;
+        editedOn = timestamp;
+    }
+
+    // Audio set timestamp on edit
+    @PreUpdate
+    protected void onUpdate() {
+        editedOn = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "media_id")
