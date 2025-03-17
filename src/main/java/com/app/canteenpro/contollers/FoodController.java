@@ -92,7 +92,15 @@ public class FoodController {
     @GetMapping("/item/listing")
     public ResponseEntity<ApiResponse<List<FoodItemListingDto>>> getFoodItemListingData() {
         List<FoodItemListingDto> foodItemsList = foodService.getFoodItemsList();
-        ApiResponse<List<FoodItemListingDto>> apiResponse = new ApiResponse<List<FoodItemListingDto>>(foodItemsList, false, "", "");
+        ApiResponse<List<FoodItemListingDto>> apiResponse = new ApiResponse<List<FoodItemListingDto>>(foodItemsList, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Get menu data
+    @GetMapping("/menu")
+    public ResponseEntity<ApiResponse<List<FoodItemDto>>> getMenu() {
+        List<FoodItemDto> menuItems = foodService.getMenuItems();
+        ApiResponse<List<FoodItemDto>> apiResponse = new ApiResponse<List<FoodItemDto>>(menuItems, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 }

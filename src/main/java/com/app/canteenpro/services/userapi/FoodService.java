@@ -240,4 +240,27 @@ public class FoodService {
         mediaMetaDataRepo.delete(foodItemImage);
         firestorageService.deleteMedia(fileNameWithExtenion, Enums.FILE_TYPES.IMAGE);
     }
+
+    public List<FoodItemDto> getMenuItems() {
+        final List<FoodItemDto> foodItems = this.foodItemRepo.findAll().stream().map((foodItem) -> {
+            final MediaDataDto mediaData = MediaDataDto.builder()
+                    .guid(foodItem.getImage().getGuid())
+                    .fileName(foodItem.getImage().getFilename())
+                    .extension(foodItem.getImage().getExtension())
+                    .build();
+            return FoodItemDto.builder()
+                    .guid(foodItem.getGuid())
+                    .itemName(foodItem.getName())
+                    .description(foodItem.getDescription())
+                    .price(foodItem.getPrice())
+                    .quantity(foodItem.getQuantity())
+                    .quantityUnit(Enums.FOOD_ITEM_QUANTITY_UNIT.fromValue(foodItem.getQuantityUnit()))
+                    .taste(Enums.FOOD_ITEM_TASTE.fromValue(foodItem.getTaste()))
+                    .type(Enums.FOOD_ITEM_TYPE.fromValue(foodItem.getType()))
+                    .imageData(mediaData)
+                    .build();
+        }).toList();
+
+        return foodItems;
+    }
 }
