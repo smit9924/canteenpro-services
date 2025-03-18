@@ -67,6 +67,7 @@ public class UserService {
             newUser.setRole(rolesRepo.findByLevel(upsertUserDto.getUserType()));
             newUser.setCanteen(loggedInUser.getCanteen());
             newUser.setPassword(passwordEncoder.encode(generatedPassword));
+            newUser.setDefaultPasswordUpdated(false);
             userRepo.save(newUser);
 
             // Get email template and set data
