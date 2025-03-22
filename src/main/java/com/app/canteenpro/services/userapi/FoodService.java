@@ -295,4 +295,19 @@ public class FoodService {
 
         return foodItems;
     }
+
+    public List<MenuCategoryDto> getMenuCategories() {
+        List<MenuCategoryDto> menuCategories = this.foodCategoryRepo.findAll()
+                .stream()
+                .map(category -> {
+                    return MenuCategoryDto.builder()
+                            .guid(category.getGuid())
+                            .name(category.getName())
+                            .description(category.getDescription())
+                            .build();
+                })
+                .toList();
+
+        return menuCategories;
+    }
 }

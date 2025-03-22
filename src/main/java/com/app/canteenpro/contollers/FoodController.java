@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/food")
@@ -98,9 +99,17 @@ public class FoodController {
 
     // Get menu data
     @GetMapping("/menu")
-    public ResponseEntity<ApiResponse<List<FoodItemDto>>> getMenu() {
-        List<FoodItemDto> menuItems = foodService.getMenuItems();
+    public ResponseEntity<ApiResponse<List<FoodItemDto>>> getMenuItems(@RequestParam Optional<String> category) {
+        List<FoodItemDto> menuItems = foodService.getMenuItems(category);
         ApiResponse<List<FoodItemDto>> apiResponse = new ApiResponse<List<FoodItemDto>>(menuItems, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Get all menu categories
+    @GetMapping("/menu/category")
+    public ResponseEntity<ApiResponse<List<MenuCategoryDto>>> getMenuCategories() {
+        List<MenuCategoryDto> menuCategories = foodService.getMenuCategories();
+        ApiResponse<List<MenuCategoryDto>> apiResponse = new ApiResponse<List<MenuCategoryDto>>(menuCategories, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 }
