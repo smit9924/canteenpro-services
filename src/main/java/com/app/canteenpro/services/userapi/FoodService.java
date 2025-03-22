@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 @Service
@@ -273,8 +270,17 @@ public class FoodService {
         firestorageService.deleteMedia(fileNameWithExtenion, Enums.FILE_TYPES.IMAGE);
     }
 
-    public List<FoodItemDto> getMenuItems() {
-        final List<FoodItemDto> foodItems = this.foodItemRepo.findAll().stream().map((foodItem) -> {
+    public List<FoodItemDto> getMenuItems(Optional<String> categoryGuid) {
+        List<FoodItem> queriedFoodItems;
+        if(categoryGuid.isPresent()) {
+            String guid = categoryGuid.get();
+            FoodCategory category = foodCategoryRepo.findByGuid(guid);
+            Collection<FoodItem> attachedFoodItems = category.getFoodItems();
+            queriedFoodItems = new ArrayList<>(attachedFoodItems);
+        } else {
+            queriedFoodItems = this.foodItemRepo.findAll();
+        }
+        final List<FoodItemDto> foodItems = queriedFoodItems.stream().map((foodItem) -> {
             final MediaDataDto mediaData = MediaDataDto.builder()
                     .guid(foodItem.getImage().getGuid())
                     .fileName(foodItem.getImage().getFilename())
