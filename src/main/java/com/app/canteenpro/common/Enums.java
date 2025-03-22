@@ -81,7 +81,8 @@ public class Enums {
 
     public static enum FOOD_ITEM_QUANTITY_UNIT {
         PIECES(1),
-        GRAM(2);
+        GRAM(2),
+        MILLI_LITER(3);
 
         private final Integer value;
         FOOD_ITEM_QUANTITY_UNIT(Integer value) {

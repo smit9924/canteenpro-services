@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -46,4 +50,7 @@ public class FoodCategory {
     @ManyToOne
     @JoinColumn(name = "canteen_id")
     private Canteen canteen;
+
+    @ManyToMany(mappedBy = "foodCategories")
+    private Collection<FoodItem> foodItems = new ArrayList<>();
 }

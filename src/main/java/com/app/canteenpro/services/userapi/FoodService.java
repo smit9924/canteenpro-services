@@ -15,8 +15,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -147,8 +150,18 @@ public class FoodService {
         item.setTaste(foodItemDto.getTaste().getValue());
         item.setType(foodItemDto.getType().getValue());
         item.setCanteen(currentUser.getCanteen());
-        // item.setCategory();
         item.setImage(mediaMetaData);
+
+        item.getFoodCategories().addAll(
+                foodItemDto.getCategories()
+                        .stream()
+                        .map(selectedCategory -> {
+                            FoodCategory fetchedCategory = foodCategoryRepo.findByGuid(selectedCategory.getGuid());
+                            fetchedCategory.getFoodItems().add(item);
+                            return fetchedCategory;
+                        })
+                        .collect(Collectors.toSet())
+        );
         itemsRepo.save(item);
     }
 
@@ -190,6 +203,13 @@ public class FoodService {
                 .taste(Enums.FOOD_ITEM_TASTE.fromValue(foodItem.getTaste()))
                 .type(Enums.FOOD_ITEM_TYPE.fromValue(foodItem.getType()))
                 .imageData(mediaDataDto)
+                .categories(foodItem.getFoodCategories().stream().map(category -> {
+                    return FoodItemsCategoriesDto.builder()
+                            .categoryName(category.getName())
+                            .guid(category.getGuid())
+                            .build();
+                    }).toList()
+                )
                 .build();
 
         return foodItemDto;
@@ -208,6 +228,18 @@ public class FoodService {
         foodItem.setQuantityUnit(foodItemDto.getQuantityUnit().getValue());
         foodItem.setTaste(foodItemDto.getTaste().getValue());
         foodItem.setType(foodItemDto.getType().getValue());
+
+        foodItem.getFoodCategories().clear();
+        foodItem.getFoodCategories().addAll(
+                foodItemDto.getCategories()
+                        .stream()
+                        .map(selectedCategory -> {
+                            FoodCategory fetchedCategory = foodCategoryRepo.findByGuid(selectedCategory.getGuid());
+                            fetchedCategory.getFoodItems().add(foodItem);
+                            return fetchedCategory;
+                        })
+                        .collect(Collectors.toSet())
+        );
 
         if(foodItemDto.getImageData().getGuid().isEmpty()) {
             final MediaMetaData existingMedia = mediaMetaDataRepo.findByGuid(foodItem.getImage().getGuid());

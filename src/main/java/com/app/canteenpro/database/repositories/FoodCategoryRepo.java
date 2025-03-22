@@ -9,4 +9,5 @@ import java.util.List;
 public interface FoodCategoryRepo extends JpaRepository<FoodCategory, Integer> {
     List<FoodCategory> findAllByCanteen(Canteen canteen);
     FoodCategory findByGuid(String guid);
+    List<FoodCategory> findByGuidIn(List<String> guid);
 }

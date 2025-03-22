@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -61,7 +65,11 @@ public class FoodItem {
     @JoinColumn(name = "canteen_id")
     private Canteen canteen;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private FoodCategory category;
+    @ManyToMany
+    @JoinTable(
+            name = "food_item_category_map",
+            joinColumns = @JoinColumn(name = "food_category_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_item_id")
+    )
+    private Collection<FoodCategory> foodCategories = new ArrayList<>();
 }
