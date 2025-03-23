@@ -112,7 +112,7 @@ public class AuthService {
         final User currentUser = commonService.getLoggedInUser();
         currentUser.setPassword(passwordEncoder.encode(newPassword));
         currentUser.setDefaultPasswordUpdated(true);
-        userRepo.save((currentUser));
+        userRepo.save(currentUser);
 
         final UserProfileResponse userProfileData = userService.getUserProfileData();
         return  userProfileData;

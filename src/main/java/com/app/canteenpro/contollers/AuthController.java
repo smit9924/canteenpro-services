@@ -38,8 +38,8 @@ public class AuthController {
     // update default password
     // return: user profile data;
     @PostMapping("/changedefaultpassword")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> changeDefaultPassword(@RequestBody String newPassowrd) {
-        final UserProfileResponse userProfileData = authService.changeDefaultPassword(newPassowrd);
+    public ResponseEntity<ApiResponse<UserProfileResponse>> changeDefaultPassword(@RequestBody String password) {
+        final UserProfileResponse userProfileData = authService.changeDefaultPassword(password);
         ApiResponse<UserProfileResponse> apiResponse = new ApiResponse<UserProfileResponse>(userProfileData, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
