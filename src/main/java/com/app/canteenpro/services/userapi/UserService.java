@@ -93,7 +93,8 @@ public class UserService {
     }
 
     public List<UserListingDto> getUserList(String userRole) {
-        List<UserListingDto> userList = userRepo.findAllByRole(rolesRepo.findByRole(userRole)).stream().map((user) -> {
+        User currentUser = commonService.getLoggedInUser();
+        List<UserListingDto> userList = userRepo.findAllByRoleAndCanteen(rolesRepo.findByRole(userRole), currentUser.getCanteen()).stream().map((user) -> {
             return new UserListingDto(
                     user.getGuid(),
                     user.getEmail(),
