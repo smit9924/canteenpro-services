@@ -98,10 +98,34 @@ public class FoodController {
     }
 
     // Get menu data
-    @GetMapping("/menu")
-    public ResponseEntity<ApiResponse<List<FoodItemDto>>> getMenuItems(@RequestParam Optional<String> category) {
-        List<FoodItemDto> menuItems = foodService.getMenuItems(category);
-        ApiResponse<List<FoodItemDto>> apiResponse = new ApiResponse<List<FoodItemDto>>(menuItems, true, "", "");
+    @GetMapping("/menu/items")
+    public ResponseEntity<ApiResponse<List<MenuFoodItemsDto>>> getMenuItems(@RequestParam Optional<String> category) {
+        List<MenuFoodItemsDto> menuItems = foodService.getMenuItems(category);
+        ApiResponse<List<MenuFoodItemsDto>> apiResponse = new ApiResponse<List<MenuFoodItemsDto>>(menuItems, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Add menu item in cart
+    @PutMapping("/menu/items/add")
+    public ResponseEntity<ApiResponse<?>> addMenuItemIntoCart(@RequestBody UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        foodService.addMenuItemIntoCart(updateCartItemQuantityDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Increase menu item quantity into cart
+    @PutMapping("/menu/items/increase")
+    public ResponseEntity<ApiResponse<?>> increaseMenuItemQuantity(@RequestBody UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        foodService.increaseMenuItemQuantity(updateCartItemQuantityDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "", "");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Decrease menu item quantity into cart
+    @PutMapping("/menu/items/decrease")
+    public ResponseEntity<ApiResponse<?>> decreaseMenuItemQuantity(@RequestBody UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        foodService.decreaseMenuItemQuantity(updateCartItemQuantityDto);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
 

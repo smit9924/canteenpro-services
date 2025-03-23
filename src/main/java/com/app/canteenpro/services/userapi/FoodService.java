@@ -14,6 +14,7 @@ import com.app.canteenpro.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +39,12 @@ public class FoodService {
 
     @Autowired
     final FoodItemRepo foodItemRepo;
+
+    @Autowired
+    final CartService cartService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public boolean createCategory(CategoryDto categoryDto) {
         final User currentUser = commonService.getLoggedInUser();
@@ -270,7 +277,7 @@ public class FoodService {
         firestorageService.deleteMedia(fileNameWithExtenion, Enums.FILE_TYPES.IMAGE);
     }
 
-    public List<FoodItemDto> getMenuItems(Optional<String> categoryGuid) {
+    public List<MenuFoodItemsDto> getMenuItems(Optional<String> categoryGuid) {
         List<FoodItem> queriedFoodItems;
         if(categoryGuid.isPresent()) {
             String guid = categoryGuid.get();
@@ -280,13 +287,16 @@ public class FoodService {
         } else {
             queriedFoodItems = this.foodItemRepo.findAll();
         }
-        final List<FoodItemDto> foodItems = queriedFoodItems.stream().map((foodItem) -> {
+        final List<MenuFoodItemsDto> foodItems = queriedFoodItems.stream().map((foodItem) -> {
             final MediaDataDto mediaData = MediaDataDto.builder()
                     .guid(foodItem.getImage().getGuid())
                     .fileName(foodItem.getImage().getFilename())
                     .extension(foodItem.getImage().getExtension())
                     .build();
-            return FoodItemDto.builder()
+
+            CheckItemAddedInCartDto isItemAddedInCart = cartService.isItemAddedInCart(foodItem.getGuid());
+
+            return MenuFoodItemsDto.builder()
                     .guid(foodItem.getGuid())
                     .itemName(foodItem.getName())
                     .description(foodItem.getDescription())
@@ -296,10 +306,60 @@ public class FoodService {
                     .taste(Enums.FOOD_ITEM_TASTE.fromValue(foodItem.getTaste()))
                     .type(Enums.FOOD_ITEM_TYPE.fromValue(foodItem.getType()))
                     .imageData(mediaData)
+                    .foodItemAddedIntoCart(isItemAddedInCart.isItemAddedInCart())
+                    .itemCount(isItemAddedInCart.getItemCount())
                     .build();
         }).toList();
 
         return foodItems;
+    }
+
+    public MenuFoodItemsDto getMenuItem(String foodItemGuid) {
+        FoodItem foodItem = this.foodItemRepo.findByGuid(foodItemGuid);
+
+        final MediaDataDto mediaData = MediaDataDto.builder()
+                .guid(foodItem.getImage().getGuid())
+                .fileName(foodItem.getImage().getFilename())
+                .extension(foodItem.getImage().getExtension())
+                .build();
+
+        CheckItemAddedInCartDto isItemAddedInCart = cartService.isItemAddedInCart(foodItem.getGuid());
+
+        return MenuFoodItemsDto.builder()
+                .guid(foodItem.getGuid())
+                .itemName(foodItem.getName())
+                .description(foodItem.getDescription())
+                .price(foodItem.getPrice())
+                .quantity(foodItem.getQuantity())
+                .quantityUnit(Enums.FOOD_ITEM_QUANTITY_UNIT.fromValue(foodItem.getQuantityUnit()))
+                .taste(Enums.FOOD_ITEM_TASTE.fromValue(foodItem.getTaste()))
+                .type(Enums.FOOD_ITEM_TYPE.fromValue(foodItem.getType()))
+                .imageData(mediaData)
+                .foodItemAddedIntoCart(isItemAddedInCart.isItemAddedInCart())
+                .itemCount(isItemAddedInCart.getItemCount())
+                .build();
+    }
+
+    public void addMenuItemIntoCart(UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        cartService.addItemIntoCart(updateCartItemQuantityDto);
+        // Set the Authorization header
+        // HttpHeaders headers = new HttpHeaders();
+        // headers.set("Authorization", authorizationHeaderValue);
+
+        // HttpEntity<ApiResponse<?>> entity = new HttpEntity<>(headers);
+        // ResponseEntity<ApiResponse<?>> response = restTemplate.exchange(appConstants.ADD_ITEM_INTO_CART, HttpMethod.PUT, entity, new ParameterizedTypeReference<ApiResponse<?>>() {});
+
+        // if (response.getStatusCode() != HttpStatus.OK) {
+        //     throw new RuntimeException("Failed to call internal API. Status code: " + response.getStatusCode());
+        // }
+    }
+
+    public void increaseMenuItemQuantity(UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        cartService.increaseCartItemQuantity(updateCartItemQuantityDto);
+    }
+
+    public void decreaseMenuItemQuantity(UpdateCartItemQuantityDto updateCartItemQuantityDto) {
+        cartService.decreaseCartItemQuantity(updateCartItemQuantityDto);
     }
 
     public List<MenuCategoryDto> getMenuCategories() {

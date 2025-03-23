@@ -1,16 +1,16 @@
 package com.app.canteenpro.DataObjects;
 
 import com.app.canteenpro.common.Enums;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class FoodItemDto {
+public class MenuFoodItemsDto{
     private String guid;
     private String itemName;
     private String description;
@@ -22,4 +22,6 @@ public class FoodItemDto {
     private String imageURL;
     private MediaDataDto imageData;
     private List<FoodItemsCategoriesDto> categories;
+    private boolean foodItemAddedIntoCart = false;
+    private int itemCount = 0;
 }

@@ -16,6 +16,9 @@ public class appConstants {
     // API urls
     public static String INTERNAL_API_BASE_URL = "http://localhost:8080/";
     public static String INTERNAL_API_EMAIL_WITH_MIME = INTERNAL_API_BASE_URL + "api/email/sendwithattchments";
+    public static String ADD_ITEM_INTO_CART= INTERNAL_API_BASE_URL + "api/cart/item";
+    public static String INCREASE_CART_ITEM_QUANTITY = INTERNAL_API_BASE_URL + "api/cart/item/decrease";
+    public static String DECREASE_CART_ITEM_QUANTITY = INTERNAL_API_BASE_URL + "api/cart/item/decrease";
 
     // Frontend URLs
     public static String FRONTEND_BASE_URL = "http://localhost:4200/";
@@ -26,4 +29,5 @@ public class appConstants {
 
     public static String EMPTY_STRING = "";
     public static String BASE64_VALIDATION_REGEX = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
+    public static Integer INITIAL_CART_ITEM_QUANTITY = 1;
 }

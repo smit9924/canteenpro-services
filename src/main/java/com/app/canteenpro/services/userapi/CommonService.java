@@ -15,7 +15,7 @@ public class CommonService {
 
     public User getLoggedInUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
+        if(authentication != null && authentication.isAuthenticated()) {
             final String loggedInUserEmail = authentication.getName();
             final User loggedinUser = userRepo.findByEmail(loggedInUserEmail).orElseThrow();
             return loggedinUser;
