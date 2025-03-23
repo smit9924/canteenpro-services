@@ -74,7 +74,7 @@ public class CartService {
                             .builder()
                             .guid(foodItem.getImage().getGuid())
                             .fileName(foodItem.getImage().getFilename())
-                            .extension(foodItem.getImage().getFilename())
+                            .extension(foodItem.getImage().getExtension())
                             .build();
 
                     return CartItemsDto
