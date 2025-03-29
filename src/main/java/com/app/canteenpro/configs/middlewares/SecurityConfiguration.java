@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/food/**").permitAll()
                         .requestMatchers("/api/cart/**").permitAll()
+                        .requestMatchers("/api/qr/**").permitAll()
                         .anyRequest().hasAnyAuthority("1"))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

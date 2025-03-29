@@ -104,4 +104,30 @@ public class Enums {
             throw new IllegalArgumentException("Invalid value for FOOD_ITEM_QUANTITY_UNIT: " + value);
         }
     }
+
+    public static enum QR_CODE_TYPE {
+        TABLE_ORDER_QR(1),
+        SELF_SERVICE_ORDER_QR(2);
+
+        private final Integer value;
+        QR_CODE_TYPE(Integer value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public Integer getValue() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static QR_CODE_TYPE fromValue(Integer value) {
+            for (QR_CODE_TYPE unit : values()) {
+                if (unit.value.equals(value)) {
+                    return unit;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for QR_CODE_TYPE: " + value);
+        }
+    }
+
 }

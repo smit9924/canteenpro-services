@@ -91,8 +91,10 @@ public class FirestorageService {
         // Store media meta data
         MediaMetaData metaData = new MediaMetaData();
         metaData.setGuid(guid);
-        metaData.setFilename(initialMediaData.getFileName());
         metaData.setExtension(initialMediaData.getExtension());
+        if(initialMediaData.getFileName() != null && !initialMediaData.getFileName().isEmpty()) {
+            metaData.setFilename(initialMediaData.getFileName());
+        }
         repo.save(metaData);
 
         return metaData;

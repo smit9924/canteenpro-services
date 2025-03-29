@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "MediaMetaData")
-public class MediaMetaData {
+public class QRCode {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -16,25 +15,37 @@ public class MediaMetaData {
     @Column(unique = true, nullable = false)
     private String guid;
 
-    private String filename;
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
-    private String extension;
+    private int type;
 
-    private LocalDateTime initiallyUploadedOn;
-    private LocalDateTime latestUploadedOn;
+    @Column(nullable = false)
+    private int number;
+
+    @Column(nullable = false)
+    private int capacity;
+
+    @ManyToOne
+    @JoinColumn(name = "canteen_id")
+    private Canteen canteen;
+
+    private LocalDateTime createdOn;
+    private LocalDateTime editedOn;
 
     // Auto set time stamp on creation
     @PrePersist
     protected void onCreate() {
         final LocalDateTime timestamp = LocalDateTime.now();
-        initiallyUploadedOn = timestamp;
-        latestUploadedOn = timestamp;
+        createdOn = timestamp;
+        editedOn = timestamp;
     }
 
     // Audio set timestamp on edit
     @PreUpdate
     protected void onUpdate() {
-        latestUploadedOn = LocalDateTime.now();
+        editedOn = LocalDateTime.now();
     }
+
 }
