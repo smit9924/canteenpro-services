@@ -23,6 +23,7 @@ public class appConstants {
     // Frontend URLs
     public static String FRONTEND_BASE_URL = "http://localhost:4200/";
     public static String ACCOUNT_LOGIN_URL = FRONTEND_BASE_URL + "auth/login";
+    public static String FOOD_ITEM_MENU_URL = FRONTEND_BASE_URL + "food-items/menu";
 
     // Email
     public static String INITIAL_LOGIN_CREDENTIALS_EMAIL_SUBJECT = "Welcome to Canteenpro – Your Account is Ready!";

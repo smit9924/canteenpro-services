@@ -4,11 +4,11 @@ import com.app.canteenpro.DataObjects.MediaDataDto;
 import com.app.canteenpro.DataObjects.QRCodeDto;
 import com.app.canteenpro.DataObjects.QRCodeListingDto;
 import com.app.canteenpro.common.Enums;
-import com.app.canteenpro.database.models.MediaMetaData;
 import com.app.canteenpro.database.models.QRCode;
 import com.app.canteenpro.database.models.User;
 import com.app.canteenpro.database.repositories.MediaMetaDataRepo;
 import com.app.canteenpro.database.repositories.QRCodeRepo;
+import com.app.canteenpro.common.appConstants;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -125,13 +123,16 @@ public class QRCodeService {
                 .map((qrCode)  -> {
                     try {
                         boolean selfServiceQRCode;
+                        String dataToEncodeInQRCode = appConstants.FOOD_ITEM_MENU_URL + "?canteen=" + currentUser.getCanteen().getGuid();
                         if(qrCode.getType() == Enums.QR_CODE_TYPE.SELF_SERVICE_ORDER_QR.getValue()) {
                             selfServiceQRCode = true;
                         } else {
                             selfServiceQRCode = false;
+                            dataToEncodeInQRCode += "&table=" + qrCode.getNumber();
                         }
 
-                        String generatedQRCode = this.getQRCodeImageBase64("Add URL here" , 150, 150);
+
+                        String generatedQRCode = this.getQRCodeImageBase64(dataToEncodeInQRCode , 150, 150);
 
                         QRCodeListingDto qrCodeListingDto = new QRCodeListingDto(
                                 qrCode.getGuid(),
