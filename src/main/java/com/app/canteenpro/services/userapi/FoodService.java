@@ -3,10 +3,8 @@ package com.app.canteenpro.services.userapi;
 import com.app.canteenpro.DataObjects.*;
 import com.app.canteenpro.common.Enums;
 import com.app.canteenpro.common.appConstants;
-import com.app.canteenpro.database.models.FoodCategory;
-import com.app.canteenpro.database.models.FoodItem;
-import com.app.canteenpro.database.models.MediaMetaData;
-import com.app.canteenpro.database.models.User;
+import com.app.canteenpro.database.models.*;
+import com.app.canteenpro.database.repositories.CanteenRepo;
 import com.app.canteenpro.database.repositories.FoodCategoryRepo;
 import com.app.canteenpro.database.repositories.FoodItemRepo;
 import com.app.canteenpro.database.repositories.MediaMetaDataRepo;
@@ -16,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,8 @@ public class FoodService {
     final CartService cartService;
 
     @Autowired
-    private RestTemplate restTemplate;
+    final CanteenRepo canteenRepo;
+
 
     public boolean createCategory(CategoryDto categoryDto) {
         final User currentUser = commonService.getLoggedInUser();
@@ -277,7 +277,12 @@ public class FoodService {
         firestorageService.deleteMedia(fileNameWithExtenion, Enums.FILE_TYPES.IMAGE);
     }
 
-    public List<MenuFoodItemsDto> getMenuItems(Optional<String> categoryGuid) {
+    public List<MenuFoodItemsDto> getMenuItems(String canteenGuid, Optional<String> categoryGuid) {
+        Optional<Canteen> canteen = canteenRepo.findByGuid(canteenGuid);
+        if(canteen.isEmpty()) {
+            throw new InvalidParameterException("Invalid canteen guid");
+        }
+
         List<FoodItem> queriedFoodItems;
         if(categoryGuid.isPresent()) {
             String guid = categoryGuid.get();
@@ -285,7 +290,7 @@ public class FoodService {
             Collection<FoodItem> attachedFoodItems = category.getFoodItems();
             queriedFoodItems = new ArrayList<>(attachedFoodItems);
         } else {
-            queriedFoodItems = this.foodItemRepo.findAll();
+            queriedFoodItems = this.foodItemRepo.findAllByCanteen(canteen.get());
         }
         final List<MenuFoodItemsDto> foodItems = queriedFoodItems.stream().map((foodItem) -> {
             final MediaDataDto mediaData = MediaDataDto.builder()
@@ -362,8 +367,13 @@ public class FoodService {
         cartService.decreaseCartItemQuantity(updateCartItemQuantityDto);
     }
 
-    public List<MenuCategoryDto> getMenuCategories() {
-        List<MenuCategoryDto> menuCategories = this.foodCategoryRepo.findAll()
+    public List<MenuCategoryDto> getMenuCategories(String canteenGuid) {
+        Optional<Canteen> canteen = canteenRepo.findByGuid(canteenGuid);
+        if(canteen.isEmpty()) {
+            throw new InvalidParameterException("Invalid canteen guid");
+        }
+
+        List<MenuCategoryDto> menuCategories = this.foodCategoryRepo.findAllByCanteen(canteen.get())
                 .stream()
                 .map(category -> {
                     return MenuCategoryDto.builder()

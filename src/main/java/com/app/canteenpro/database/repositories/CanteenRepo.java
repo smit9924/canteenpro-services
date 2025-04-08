@@ -4,5 +4,8 @@ import com.app.canteenpro.database.models.Canteen;
 import com.app.canteenpro.database.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-    public interface CanteenRepo  extends JpaRepository<Canteen, Integer> {
+import java.util.Optional;
+
+public interface CanteenRepo  extends JpaRepository<Canteen, Integer> {
+        Optional<Canteen> findByGuid(String guid);
 }

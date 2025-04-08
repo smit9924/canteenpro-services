@@ -99,8 +99,8 @@ public class FoodController {
 
     // Get menu data
     @GetMapping("/menu/items")
-    public ResponseEntity<ApiResponse<List<MenuFoodItemsDto>>> getMenuItems(@RequestParam Optional<String> category) {
-        List<MenuFoodItemsDto> menuItems = foodService.getMenuItems(category);
+    public ResponseEntity<ApiResponse<List<MenuFoodItemsDto>>> getMenuItems( @RequestParam String canteen, @RequestParam Optional<String> category) {
+        List<MenuFoodItemsDto> menuItems = foodService.getMenuItems(canteen, category);
         ApiResponse<List<MenuFoodItemsDto>> apiResponse = new ApiResponse<List<MenuFoodItemsDto>>(menuItems, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
@@ -131,8 +131,8 @@ public class FoodController {
 
     // Get all menu categories
     @GetMapping("/menu/category")
-    public ResponseEntity<ApiResponse<List<MenuCategoryDto>>> getMenuCategories() {
-        List<MenuCategoryDto> menuCategories = foodService.getMenuCategories();
+    public ResponseEntity<ApiResponse<List<MenuCategoryDto>>> getMenuCategories(@RequestParam String canteen) {
+        List<MenuCategoryDto> menuCategories = foodService.getMenuCategories(canteen);
         ApiResponse<List<MenuCategoryDto>> apiResponse = new ApiResponse<List<MenuCategoryDto>>(menuCategories, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
