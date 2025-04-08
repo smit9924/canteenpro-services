@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,20 @@ public class AuthController {
     @GetMapping("/roles")
     public ResponseEntity<ApiResponse<List<RoleListDto>>> userRolesList() {
         ApiResponse<List<RoleListDto>> apiResponse = new ApiResponse<List<RoleListDto>>(rolesService.getUserList(), true, "","");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/customer/sendotp")
+    public ResponseEntity<ApiResponse<?>> signupCustomer(@RequestBody String email) throws IOException {
+        authService.generateAndSendOTP(email);
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, true, "","");
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping("/customer/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> authenticateCustomer(@RequestBody UserLoginDto userLoginDto) {
+        LoginResponse loginResponse =  authService.loginCustomUser(userLoginDto);
+        ApiResponse<LoginResponse> apiResponse = new ApiResponse<LoginResponse>(loginResponse, true, "","");
         return ResponseEntity.ok(apiResponse);
     }
 

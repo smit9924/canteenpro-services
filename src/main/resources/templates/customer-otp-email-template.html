@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login OTP - Canteenpro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 16px auto;
+            background: #ffffff;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+            border: 2px solid #38b2ac;
+            overflow: hidden;
+        }
+        .header {
+            background: #38b2ac;
+            color: #ffffff;
+            text-align: center;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 18px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 16px auto;
+            padding: 10px;
+            text-align: center;
+            background: #38b2ac;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 3px 6px rgba(56, 178, 172, 0.4);
+        }
+        .button:hover {
+            background: #319795;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            margin-top: 16px;
+            padding: 8px;
+            background: #f7fafc;
+            border-top: 1px solid #cbd5e0;
+        }
+        .otp-box {
+            background: #edf2f7;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px auto;
+            border: 1px solid #38b2ac;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        .otp-code {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #2d3748;
+            margin: 10px 0;
+        }
+        .expiry-note {
+            font-size: 13px;
+            color: #e53e3e;
+            margin-top: 10px;
+        }
+        .bold {
+            font-weight: bold;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        Login OTP - Canteenpro
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <p>Dear <b>Customer</b>,</p>
+        <p>Here is your one-time password (OTP) to log in to your Canteenpro account:</p>
+
+        <div class="otp-box">
+            <p class="bold">Your Login OTP:</p>
+            <p class="otp-code">{{otpCode}}</p>
+            <p class="expiry-note">This code will expire in 10 minutes</p>
+        </div>
+
+        <p>Enter this code on the login screen to access your account.</p>
+
+        <p>For security reasons, please never share this code with anyone. Our team will never ask you for this code.</p>
+
+        <a href="{{loginUrl}}" class="button">Go to Login</a>
+
+        <p>If you didn't request this login, please contact our support team immediately.</p>
+
+        <p>Best Regards,<br><b>Team Canteenpro</b></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 Canteenpro. All Rights Reserved.
+    </div>
+</div>
+</body>
+</html>

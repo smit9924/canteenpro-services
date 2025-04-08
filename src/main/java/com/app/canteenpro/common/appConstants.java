@@ -23,10 +23,12 @@ public class appConstants {
     // Frontend URLs
     public static String FRONTEND_BASE_URL = "http://localhost:4200/";
     public static String ACCOUNT_LOGIN_URL = FRONTEND_BASE_URL + "auth/login";
+    public static String CUSTOMER_ACCOUNT_LOGIN_URL = FRONTEND_BASE_URL + "auth/login/customer";
     public static String FOOD_ITEM_MENU_URL = FRONTEND_BASE_URL + "food-items/menu";
 
     // Email
     public static String INITIAL_LOGIN_CREDENTIALS_EMAIL_SUBJECT = "Welcome to Canteenpro – Your Account is Ready!";
+    public static String CUSTOMER_LOGIN_OTP_EMAIL_SUBJECT = "Canteenpro Login Code";
 
     public static String EMPTY_STRING = "";
     public static String BASE64_VALIDATION_REGEX = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";

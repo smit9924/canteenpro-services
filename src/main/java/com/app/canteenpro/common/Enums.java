@@ -10,7 +10,8 @@ public class Enums {
         MANAGER(3),
         KITCHENER(4),
         WAITER(5),
-        CASHIER(6);
+        CASHIER(6),
+        CUSTOMER(7);
 
         private final Integer value;
         USER_ROLES(Integer value) {

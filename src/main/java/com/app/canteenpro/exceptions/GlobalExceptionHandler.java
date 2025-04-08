@@ -42,6 +42,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
     }
 
+    @ExceptionHandler(OTPExpiredException.class)
+    public ResponseEntity<ApiResponse<?>> handleOTPExpiredException(OTPExpiredException ex) {
+        ApiResponse<?> apiResponse = new ApiResponse<>(false, false, ex.getMessage(), ex.toString());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {
         ApiResponse<?> apiResponse = new ApiResponse<>(false, false, "Unexpected error occured!", ex.getMessage());

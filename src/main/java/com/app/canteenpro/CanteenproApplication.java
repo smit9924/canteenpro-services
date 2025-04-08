@@ -23,8 +23,8 @@ public class CanteenproApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		Roles role;
-//		String[] userroles = {"admin", "owner", "manager", "kitchener", "waiter", "cashier"};
-//		int[] level = {1, 2, 3, 4, 5, 6,};
+//		String[] userroles = {"admin", "owner", "manager", "kitchener", "waiter", "cashier", "customer"};
+//		int[] level = {1, 2, 3, 4, 5, 6, 7};
 //
 //		for(int index = 0; index < userroles.length; index++) {
 //			// ADMIN
