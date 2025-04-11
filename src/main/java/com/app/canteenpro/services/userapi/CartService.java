@@ -87,6 +87,7 @@ public class CartService {
                             .quantityUnit(Enums.FOOD_ITEM_QUANTITY_UNIT.fromValue(foodItem.getQuantityUnit()))
                             .itemCount(cartItem.getQuantity())
                             .imageData(mediaDataDto)
+                            .canteenGuid(foodItem.getCanteen().getGuid())
                             .build();
                 })
                 .toList();

@@ -33,6 +33,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/food/**").permitAll()
                         .requestMatchers("/api/cart/**").permitAll()
                         .requestMatchers("/api/qr/**").permitAll()
+                        .requestMatchers("/api/contactus/**").permitAll()
+                        .requestMatchers("/api/order/**").permitAll()
                         .anyRequest().hasAnyAuthority("1"))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

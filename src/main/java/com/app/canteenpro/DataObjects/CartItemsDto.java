@@ -19,4 +19,5 @@ public class CartItemsDto {
     private Enums.FOOD_ITEM_QUANTITY_UNIT quantityUnit;
     private MediaDataDto imageData;
     private Integer itemCount;
+    private String canteenGuid;
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface CartItemRepo extends JpaRepository<CartItem, Integer> {
     List<CartItem> findAllByUser(User user);
     CartItem findByUserAndFoodItem(User user, FoodItem foodItem);
+    void deleteAllByUser(User user);
 }
