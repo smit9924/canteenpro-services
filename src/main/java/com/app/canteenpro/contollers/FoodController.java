@@ -98,14 +98,14 @@ public class FoodController {
     }
 
     // Get menu data
+    // Add menu item in cart
+
     @GetMapping("/menu/items")
     public ResponseEntity<ApiResponse<List<MenuFoodItemsDto>>> getMenuItems( @RequestParam String canteen, @RequestParam Optional<String> category) {
         List<MenuFoodItemsDto> menuItems = foodService.getMenuItems(canteen, category);
         ApiResponse<List<MenuFoodItemsDto>> apiResponse = new ApiResponse<List<MenuFoodItemsDto>>(menuItems, true, "", "");
         return ResponseEntity.ok(apiResponse);
     }
-
-    // Add menu item in cart
     @PutMapping("/menu/items/add")
     public ResponseEntity<ApiResponse<?>> addMenuItemIntoCart(@RequestBody UpdateCartItemQuantityDto updateCartItemQuantityDto) {
         foodService.addMenuItemIntoCart(updateCartItemQuantityDto);

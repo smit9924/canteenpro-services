@@ -131,4 +131,33 @@ public class Enums {
         }
     }
 
+    public static enum ORDER_STATUS {
+        NOT_PLACED(1),
+        PLACED(2),
+        COOKING(3),
+        COMPLETED(4),
+        DELIVERED(5),
+        CANCELLED(6);
+
+        private final Integer value;
+        ORDER_STATUS(Integer value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public Integer getValue() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static ORDER_STATUS fromValue(Integer value) {
+            for (ORDER_STATUS status : values()) {
+                if (status.value.equals(value)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Invalid order status: " + value);
+        }
+    }
+
 }

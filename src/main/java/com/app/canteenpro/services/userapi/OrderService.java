@@ -1,21 +1,14 @@
 package com.app.canteenpro.services.userapi;
 
-import com.app.canteenpro.DataObjects.CartItemsDto;
-import com.app.canteenpro.DataObjects.OrderDto;
-import com.app.canteenpro.database.models.FoodItem;
-import com.app.canteenpro.database.models.Order;
-import com.app.canteenpro.database.models.OrderItem;
-import com.app.canteenpro.database.models.User;
-import com.app.canteenpro.database.repositories.CartItemRepo;
-import com.app.canteenpro.database.repositories.FoodItemRepo;
-import com.app.canteenpro.database.repositories.OrderItemRepo;
-import com.app.canteenpro.database.repositories.OrderRepo;
+import com.app.canteenpro.DataObjects.*;
+import com.app.canteenpro.common.Enums;
+import com.app.canteenpro.database.models.*;
+import com.app.canteenpro.database.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -34,29 +27,70 @@ public class OrderService {
     @Autowired
     private FoodItemRepo foodItemRepo;
 
+    @Autowired
+    private CanteenRepo canteenRepo;
+
     @Transactional
-    public void placeOrder(List<CartItemsDto> orderItems) {
+    public void placeOrder(PlaceOrderDto placeOrderDto) {
         User currentUser = commonService.getLoggedInUser();
 
         // Remove all items from cart
         cartItemRepo.deleteAllByUser(currentUser);
 
+        // Find canteen
+        Optional<Canteen> canteen = canteenRepo.findByGuid(placeOrderDto.getCanteenGuid());
+        if(canteen.isEmpty()) {
+            // TODO: throw error
+            throw new RuntimeException();
+        }
+
         // Store order details
         Order order = new Order();
         order.setGuid(UUID.randomUUID().toString());
         order.setUser(currentUser);
+        order.setCanteen(canteen.get());
+        order.setInstructions(placeOrderDto.getInstructions());
+        order.setOrderStatus(Enums.ORDER_STATUS.PLACED);
         orderRepo.save(order);
 
         // Store order items
-        orderItems.forEach((orderItem) -> {
+        placeOrderDto.getOrderItems().forEach((orderItem) -> {
             FoodItem foodItem = foodItemRepo.findByGuid(orderItem.getGuid());
             OrderItem newOrderItem = new OrderItem();
             newOrderItem.setGuid(UUID.randomUUID().toString());
             newOrderItem.setFoodItem(foodItem);
-            System.out.println(orderItem.getItemCount());
-            newOrderItem.setQuantity(orderItem.getItemCount());
-            newOrderItem.setOrder(order);
+            newOrderItem.setQuantity(orderItem.getQuantity());
+            newOrderItem.getOrder().add(order);
             orderItemRepo.save(newOrderItem);
         });
+    }
+
+    public OrderDetailsDto getOrder(String guid) {
+        Optional<Order> order = orderRepo.findByGuid(guid);
+
+        if(order.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        OrderDetailsDto orderDetailsDto = new OrderDetailsDto(order.get());
+        return orderDetailsDto;
+    }
+
+    public List<OrderListDto> getOrdersList() {
+        // get current logged in user;
+        User currentUser = commonService.getLoggedInUser();
+
+        // Get all order of current user
+        List<Order> orders = orderRepo.findAllByUser(currentUser);
+
+        List<OrderListDto> orderList = orders
+                .stream()
+                .map(order -> {
+                    final OrderListDto orderInList = new OrderListDto(order);
+                    return orderInList;
+                })
+                .toList();
+
+        return orderList;
     }
 }

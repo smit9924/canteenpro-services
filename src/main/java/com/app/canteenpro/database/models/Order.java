@@ -1,13 +1,17 @@
 package com.app.canteenpro.database.models;
 
+import com.app.canteenpro.common.Enums;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "\"order\"")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -18,6 +22,9 @@ public class Order {
 
     @Column(nullable = true)
     private String instructions;
+
+    @Column(nullable = false)
+    private Enums.ORDER_STATUS orderStatus = Enums.ORDER_STATUS.NOT_PLACED;
 
     private LocalDateTime createdOn;
     private LocalDateTime editedOn;
@@ -43,4 +50,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "canteen_id")
     private Canteen canteen;
+
+    @ManyToMany(mappedBy = "order")
+    private Collection<OrderItem> orderItems = new ArrayList<>();
 }
