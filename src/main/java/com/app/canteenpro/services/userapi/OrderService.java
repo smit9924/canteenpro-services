@@ -93,4 +93,36 @@ public class OrderService {
 
         return orderList;
     }
+
+    public List<OrderDetailsDto> getPendingOrdersList() {
+        // get current logged in user;
+        User currentUser = commonService.getLoggedInUser();
+
+        // Get canteen of current user
+        Canteen canteen = currentUser.getCanteen();
+
+        // Get all order of current user
+        List<Order> orders = orderRepo.findAllByCanteenOrderByCreatedOnDesc(canteen);
+
+        List<OrderDetailsDto> orderList = orders
+                .stream()
+                .map(order -> {
+                    final OrderDetailsDto orderInList = new OrderDetailsDto(order);
+                    return orderInList;
+                })
+                .toList();
+
+        return orderList;
+    }
+
+    public void updateOrderStatus(String guid, Enums.ORDER_STATUS status) {
+        Optional<Order> order = orderRepo.findByGuid(guid);
+        if(order.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        final Order orderPresent = order.get();
+        orderPresent.setOrderStatus(status);
+        orderRepo.save(orderPresent);
+    }
 }

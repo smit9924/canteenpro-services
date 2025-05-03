@@ -30,6 +30,7 @@ public class OrderDetailsDto {
         this.orderPlacedDate = this.formatDate(order.getCreatedOn());
         this.setOrderItems(order.getOrderItems());
         this.orderStatus = order.getOrderStatus();
+        this.setOrderData(order.getOrderItems());
     }
 
     private String formatDate(LocalDateTime dateTime) {
@@ -58,6 +59,16 @@ public class OrderDetailsDto {
                     .imageData(mediaDataDto)
                     .build();
         }).toList();
+    }
+
+    private void setOrderData(Collection<OrderItem> orderItems) {
+        this.total = 0;
+         orderItems.stream()
+                .map(orderItem -> {
+                    this.total += (orderItem.getFoodItem().getPrice() * orderItem.getQuantity());
+                    return orderItem.getFoodItem().getName();
+                })
+                .toList();
     }
 
 }
